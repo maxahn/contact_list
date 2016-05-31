@@ -11,6 +11,8 @@ class Contact
     # @param email [String] The contact's email address
   def initialize(name, email)
     # TODO: Assign parameter values to instance variables.
+    @name = name
+    @email = email
   end
 
     # Provides functionality for managing contacts in the csv file.
