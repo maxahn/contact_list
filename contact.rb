@@ -4,24 +4,31 @@ require 'csv'
 # The ContactList class will work with Contact objects instead of interacting with the CSV file directly
 class Contact
 
-  attr_accessor :name, :email
-    
-    # Creates a new contact object
+  attr_accessor :name, :email, :id
+  @@csv_file = './test_contact.csv'
+  @@id_tracker = 0  
+  # Creates a new contact object
     # @param name [String] The contact's name
     # @param email [String] The contact's email address
   def initialize(name, email)
     # TODO: Assign parameter values to instance variables.
     @name = name
     @email = email
+    @id = @@id_tracker 
+    @@id_tracker += 1
   end
 
     # Provides functionality for managing contacts in the csv file.
-  class << self
-
+  class << self #######SO THESE ARE CLASS MEHTODS? DOES THIS MEAN TO USE THEM, YOU WOULD USE CLASS.METHOD INSTEAD OF USING THEM ON A PARTICULAR INSTANCE OF THE CLASS?###### 
     # Opens 'contacts.csv' and creates a Contact object for each line in the file (aka each contact).
     # @return [Array<Contact>] Array of Contact objects
     def all
-      # TODO: Return an Array of Contact instances made from the data in 'contacts.csv'.
+      # TODO: Return an Array of Contact instances made from the data in 'contacts.csv'.    
+#       CSV.foreach(@@csv_file, 'r') do |contact_row|
+#       puts contact_row
+      puts CSV.read(@@csv_file)[0].class
+      puts [['Maxwell', 'maxwell@awesome.com'],['Jade', 'bunnypower@sleepy.com'],['Rocky','perogies@village.com']]
+#       end
     end
 
       # Creates a new contact, adding it to the csv file, returning the new contact.
