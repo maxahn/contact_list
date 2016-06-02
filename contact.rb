@@ -5,7 +5,7 @@ require 'csv'
 class Contact
 
   attr_accessor :name, :email, :id
-  @@csv_file = './test_contact.csv'
+  @@csv_file = './contact.csv' #'./test_contact.csv'
   @@id_tracker = 1  
   File_Path = @@csv_file
 # Creates a new contact object
@@ -75,13 +75,13 @@ class Contact
       # TODO: Select the Contact instances from the 'contacts.csv' file whose name or email attributes contain the search term.
       #
       contacts = Contact.all
-      term.downcase!
+      new_term = term.downcase
       
       contacts.find_all do |contact|
         name = contact.name.downcase
         email = contact.email.downcase
         #binding.pry
-        name.include?(term) || email.include?(term)
+        name.include?(new_term) || email.include?(new_term)
       end
 
         
