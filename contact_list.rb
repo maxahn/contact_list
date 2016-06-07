@@ -12,7 +12,7 @@ class ContactList
 
   when 'list'
     contacts = Contact.all
-    contacts.each {|contact| puts "Name: #{contact.name}, Email: #{contact.email}"}
+    contacts.each {|contact| puts "Name: #{contact.name}, Email: #{contact.email}, ID: #{contact.id}"}
   when 'new'
     if ARGV[1] == nil
       puts "Please enter the name and email of the contact you would like to create."
@@ -23,7 +23,7 @@ class ContactList
     end
   when 'show'
     contact_found = Contact.find(ARGV[1])
-    unless contact_found.nil?
+    if !contact_found.nil?
       puts "Found contact:"
       puts "Name: #{contact_found.name}, Email: #{contact_found.email}"
     else 
@@ -32,7 +32,7 @@ class ContactList
   when 'search'
     contacts_found = Contact.search(ARGV[1])
     puts "Found the following contacts:"
-    unless contacts_found.nil? 
+    if !contacts_found.nil? 
       contacts_found.each {|contact| puts "Name: #{contact.name}, Email: #{contact.email}"}
     else
       puts "No contacts were found containing '#{ARGV[1]}'"
