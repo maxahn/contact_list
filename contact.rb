@@ -7,33 +7,40 @@ class Contact
   attr_accessor :name, :email, :id
   @@csv_file = './contact.csv' #'./test_contact.csv'
   @@id_tracker = 1  
-  File_Path = @@csv_file
-# Creates a new contact object
-    # @param name [String] The contact's name
-    # @param email [String] The contact's email address
-  def initialize(name, email)
+
+  # Creates a new contact object
+  # @param name [String] The contact's name
+  # @param email [String] The contact's email address
+  
+  def initialize(name, email, id=nil)
     # TODO: Assign parameter values to instance variables.
     @name = name
     @email = email
-    @id = @@id_tracker
-    @@id_tracker += 1
+    #id.nil? ?  @id = @@id_tracker += 1 : @id = id
+    @id = id || @@id_tracker += 1
   end
 
-     
-    # Provides functionality for managing contacts in the csv file.
-  class << self #######SO THESE ARE CLASS MEHTODS? DOES THIS MEAN TO USE THEM, YOU WOULD USE CLASS.METHOD INSTEAD OF USING THEM ON A PARTICULAR INSTANCE OF THE CLASS?###### 
+  # Provides functionality for managing contacts in the csv file.
+  class << self
     # Opens 'contacts.csv' and creates a Contact object for each line in the file (aka each contact).
     # @return [Array<Contact>] Array of Contact objects
+    
+    def initialize_id_tracker 
+      @@id_tracker = all.reduce (0) {|memo, contact| contact.id > memo ? contact.id : memo}
+
+      @@id_tracker = all.map { |c| c.id }.reduce { |m, id| m > id ? m : id }
+
+    end
+     
     def all
       # TODO: Return an Array of Contact instances made from the data in 'contacts.csv'.   
     contact_list = []
       CSV.foreach(@@csv_file, 'r') do |contact_row|
         name = contact_row[0]
         email = contact_row[1]
-        id = contact_row[2]
-        
-        contact = Contact.new(name, email)
-        contact.id = id 
+        id = contact_row[2].to_i
+         
+        contact = Contact.new(name, email, id)
         contact_list << contact       
 # puts CSV.read(@@csv_file)
       end
@@ -57,15 +64,7 @@ class Contact
       # @return [Contact, nil] the contact with the specified id. If no contact has the id, returns nil.
     def find(id)
       # TODO: Find the Contact in the 'contacts.csv' file with the matching id.
-
-        contacts = Contact.all
-
-        contacts.each do |contact|
-          if contact.id == id.to_s 
-            return contact
-          end
-        end
-        nil
+        all.find {|contact| contact.id == id.to_i} 
     end
 
       # Search for contacts by either name or email.
@@ -80,17 +79,19 @@ class Contact
       contacts.find_all do |contact|
         name = contact.name.downcase
         email = contact.email.downcase
-        #binding.pry
         name.include?(new_term) || email.include?(new_term)
       end
 
-        
     end
         
     def id_tracker 
       @@id_tracker
     end
-  end
 
+    def csv_file
+      @@csv_file
+    end
+  end
+  initialize_id_tracker
 end
 

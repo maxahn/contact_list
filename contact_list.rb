@@ -5,8 +5,9 @@ require 'pry'
 class ContactList
 
   # TODO: Implement user interaction. This should be the only file where you use `puts` and `gets`.
+   
   command = ARGV[0]
-
+  
   case command
 
   when 'list'
@@ -22,7 +23,7 @@ class ContactList
     end
   when 'show'
     contact_found = Contact.find(ARGV[1])
-    if contact_found != nil
+    unless contact_found.nil?
       puts "Found contact:"
       puts "Name: #{contact_found.name}, Email: #{contact_found.email}"
     else 
@@ -31,8 +32,8 @@ class ContactList
   when 'search'
     contacts_found = Contact.search(ARGV[1])
     puts "Found the following contacts:"
-    if contacts_found 
-        contacts_found.each {|contact| puts "Name: #{contact.name}, Email: #{contact.email}"}
+    unless contacts_found.nil? 
+      contacts_found.each {|contact| puts "Name: #{contact.name}, Email: #{contact.email}"}
     else
       puts "No contacts were found containing '#{ARGV[1]}'"
     end 
