@@ -19,6 +19,11 @@ class Contact
     @id = id || @@id_tracker += 1
   end
 
+  def save(id, name, email) 
+      Contact.connection.exec_params('INSERT INTO contacts (id, name, email) 
+                      VALUES ($1, $2, $3);', [id, name, email])
+  end
+
   # Provides functionality for managing contacts in the csv file.
   class << self
     # Opens 'contacts.csv' and creates a Contact object for each line in the file (aka each contact).
@@ -44,18 +49,20 @@ class Contact
       end
     end
 
-    # Creates a new contact, adding it to the csv file, returning the new contact.
+    # Creates a new contact, adding it to the contacts table, returning the new contact.
     # @param name [String] the new contact's name
     # @param email [String] the contact's email
     def create(name, email)
       # TODO: Instantiate a Contact, add its data to the 'contacts.csv' file, and return it.
-      new_contact = Contact.new(name, email)
-      CSV.open(@@csv_file, 'a') do |csv|
-        csv << [new_contact.name, new_contact.email, new_contact.id]
-      end
-      new_contact
+    # new_contact = Contact.new(name, email)
+    # CSV.open(@@csv_file, 'a') do |csv|
+    #   csv << [new_contact.name, new_contact.email, new_contact.id]
+    # end
+    # new_contact
+      con = Contact.new(name, email)
+      con.save(con.id, con.name, con.email)
     end
-           
+          
     # Find the Contact in the 'contacts.csv' file with the matching id.
     # @param id [Integer] the contact id
     # @return [Contact, nil] the contact with the specified id. If no contact has the id, returns nil.
