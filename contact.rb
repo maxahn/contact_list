@@ -78,14 +78,16 @@ class Contact
     # @return [Array<Contact>] Array of Contact objects.
     def search(term)
     # TODO: Select the Contact instances from the 'contacts.csv' file whose name or email attributes contain the search term.
-      contacts = Contact.all
-      new_term = term.downcase
-      
-      contacts.find_all do |contact|
-        name = contact.name.downcase
-        email = contact.email.downcase
-        name.include?(new_term) || email.include?(new_term)
-      end
+    # contacts = Contact.all
+    # new_term = term.downcase
+    # 
+    # contacts.find_all do |contact|
+    #   name = contact.name.downcase
+    #   email = contact.email.downcase
+    #   name.include?(new_term) || email.include?(new_term)
+    # end
+      matching_results = Contact.connection.exec_params('SELECT * FROM contacts WHERE name LIKE $1 OR email LIKE $1;', ["%#{term}%"])
+      matching_results.map {|contact| Contact.new(contact['name'], contact['email'], contact['id'].to_i)}
     end
         
     def id_tracker 
