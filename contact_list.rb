@@ -36,7 +36,34 @@ class ContactList
       contacts_found.each {|contact| puts "Name: #{contact.name}, Email: #{contact.email}"}
     else
       puts "No contacts were found containing '#{ARGV[1]}'"
-    end 
+    end
+  when 'update'
+    id = ARGV[1]
+    puts "Which would you like to update?"
+    puts "name - 1"
+    puts "email - 2"
+    puts "both - 3"
+
+    choice = STDIN.gets.chomp 
+
+    case choice
+    when '1' then
+      puts "Enter new name for contact with id #{id}"
+      new_name = STDIN.gets.chomp 
+      Contact.update(id, new_name, nil)
+    when '2' then
+      puts "Enter new email for contact with id #{id}"
+      new_email= STDIN.gets.chomp 
+      Contact.update(id, nil, new_email)
+    when '3' then
+      puts "Enter new name for contact with id #{id}"
+      new_name = STDIN.gets.chomp 
+      puts "Enter new email for contact with id #{id}"
+      new_email = STDIN.gets.chomp
+      Contact.update(id, new_name, new_email)
+    else 
+      "Invalid input."
+    end
   else 
     puts 'Here is a list of available commands.'
     puts '  new     - Create a new contact'

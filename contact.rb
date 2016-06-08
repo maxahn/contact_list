@@ -1,5 +1,7 @@
 require 'csv'
 require 'pg'
+require 'pry'
+
 # Represents a person in an address book.
 # The ContactList class will work with Contact objects instead of interacting with the CSV file directly
 class Contact
@@ -19,9 +21,17 @@ class Contact
     @id = id || @@id_tracker += 1
   end
 
-  def save(id, name, email) 
+  def save
+    found_contact = Contact.find(id)
+    if found_contact.nil? 
       Contact.connection.exec_params('INSERT INTO contacts (id, name, email) 
-                      VALUES ($1, $2, $3);', [id, name, email])
+                        VALUES ($1, $2, $3);', [id, name, email])
+    else
+      name = self.name || found_contact.name
+      email = self.email || found_contact.email
+      Contact.connection.exec_params('UPDATE contacts SET name = $1, email = $2 WHERE id = $3::int;',
+                                     [name, email, id])
+    end
   end
 
   # Provides functionality for managing contacts in the csv file.
@@ -60,7 +70,7 @@ class Contact
     # end
     # new_contact
       con = Contact.new(name, email)
-      con.save(con.id, con.name, con.email)
+      con.save
     end
           
     # Find the Contact in the 'contacts.csv' file with the matching id.
@@ -89,7 +99,12 @@ class Contact
       matching_results = Contact.connection.exec_params('SELECT * FROM contacts WHERE name LIKE $1 OR email LIKE $1;', ["%#{term}%"])
       matching_results.map {|contact| Contact.new(contact['name'], contact['email'], contact['id'].to_i)}
     end
-        
+       
+    def update(id, new_name, new_email)
+      contact_update = Contact.new(new_name, new_email, id)
+      contact_update.save
+    end
+
     def id_tracker 
       @@id_tracker
     end
