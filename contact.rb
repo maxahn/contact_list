@@ -69,6 +69,8 @@ class Contact
     def find(id)
     # TODO: Find the Contact in the 'contacts.csv' file with the matching id.
         all.find {|contact| contact.id == id.to_i} 
+        #found_hash = Contact.connection.exec_params('SELECT * FROM contacts WHERE id = $1::int;', [id])[0] 
+        #Contact.new(found_hash['name'], found_hash['email'], found_hash['id']);     #this seems like what the question asked for but I prefer the original method due.
     end
 
     # Search for contacts by either name or email.

@@ -27,7 +27,7 @@ class ContactList
       puts "Found contact:"
       puts "Name: #{contact_found.name}, Email: #{contact_found.email}"
     else 
-      puts "No contact was found with id '#{ARGV[1]}"
+      puts "No contact was found with id '#{ARGV[1]}'"
     end
   when 'search'
     contacts_found = Contact.search(ARGV[1])
