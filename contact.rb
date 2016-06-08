@@ -34,6 +34,12 @@ class Contact
     end
   end
 
+  #destroys contact with matching id
+  def destroy
+    #binding.pry
+    Contact.connection.exec_params('DELETE FROM contacts WHERE id = $1::int;', [id]) 
+  end
+  
   # Provides functionality for managing contacts in the csv file.
   class << self
     # Opens 'contacts.csv' and creates a Contact object for each line in the file (aka each contact).
@@ -54,7 +60,7 @@ class Contact
     end
      
     def all
-      connection.exec('SELECT * FROM contacts;').map do |contact|
+      connection.exec('SELECT * FROM contacts ORDER BY id;').map do |contact|
         Contact.new(contact["name"], contact["email"], contact["id"].to_i)
       end
     end
@@ -99,10 +105,20 @@ class Contact
       matching_results = Contact.connection.exec_params('SELECT * FROM contacts WHERE name LIKE $1 OR email LIKE $1;', ["%#{term}%"])
       matching_results.map {|contact| Contact.new(contact['name'], contact['email'], contact['id'].to_i)}
     end
-       
+    
+    #updates information on contact with matching id
     def update(id, new_name, new_email)
       contact_update = Contact.new(new_name, new_email, id)
       contact_update.save
+    end
+   
+    def destroy_contact(id)
+      found_contact = Contact.find(id)
+     # binding.pry
+      if found_contact 
+     #   binding.pry
+        found_contact.destroy
+      end
     end
 
     def id_tracker 

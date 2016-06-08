@@ -14,7 +14,7 @@ class ContactList
     contacts = Contact.all
     contacts.each {|contact| puts "Name: #{contact.name}, Email: #{contact.email}, ID: #{contact.id}"}
   when 'new'
-    if ARGV[1] == nil
+    if ARGV[1].nil?
       puts "Please enter the name and email of the contact you would like to create."
     elsif ARGV[2] == nil 
       puts "Please enter the email as well."
@@ -36,6 +36,12 @@ class ContactList
       contacts_found.each {|contact| puts "Name: #{contact.name}, Email: #{contact.email}"}
     else
       puts "No contacts were found containing '#{ARGV[1]}'"
+    end
+  when 'destroy'
+    if ARGV[1].nil? 
+      puts "Please enter id of contact you would like to destroy."
+    else
+      Contact.destroy_contact(ARGV[1].to_i)
     end
   when 'update'
     id = ARGV[1]
@@ -70,5 +76,7 @@ class ContactList
     puts '  list    - List all contacts'
     puts '  show    - Show a contact'
     puts '  search  - Search contacts'
+    puts '  destroy - Destroy contact'
+    puts '  update  - Updates contact'
   end  
 end
